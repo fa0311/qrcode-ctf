@@ -9,6 +9,7 @@ import numpy as np
 import qrcode
 import qrcode.constants
 import qrcode.image.pil
+from utils.model import FlagDescription, FlagModelMulti, FlagModelOne
 
 
 class QRCode:
@@ -17,9 +18,6 @@ class QRCode:
     def __init__(self, img: cv2.typing.MatLike, text: str):
         self.img = img
         self.text = text
-
-    def copy_with(self, img: cv2.typing.MatLike):
-        return self.__class__(img, self.text)
 
     @classmethod
     def from_text(cls, text: str):
@@ -45,11 +43,11 @@ class QRCode:
         return data == self.text
 
 
-FlagCallable = Callable[[cv2.typing.MatLike], cv2.typing.MatLike]
+FlagCallable = Callable[[cv2.typing.MatLike], list[cv2.typing.MatLike]]
 
 
 class CTF:
-    flags: list[tuple[str, FlagCallable, tuple[str, str]]] = []
+    flags: list[tuple[str, FlagCallable, FlagDescription]] = []
     pepper: str
     BOX_SIZE = QRCode.BOX_SIZE
 
@@ -63,7 +61,8 @@ class CTF:
 
     def flag(self, ja: str, en: str):
         def wrapper(func: FlagCallable):
-            self.flags.append((func.__name__, func, (ja, en)))
+            desc = FlagDescription(ja=ja, en=en)
+            self.flags.append((func.__name__, func, desc))
             return func
 
         return wrapper
@@ -72,15 +71,40 @@ class CTF:
         key = hashlib.md5(str(random.random()).encode()).hexdigest()
         return "FLAG_{" + key + "}"
 
-    def once(self, dir: str):
-        os.makedirs(dir, exist_ok=True)
+    def add_border(self, imgs: list[cv2.typing.MatLike]):
+        results: list[cv2.typing.MatLike] = []
+        for img in imgs:
+            img = cv2.copyMakeBorder(
+                img,
+                self.BOX_SIZE,
+                self.BOX_SIZE,
+                self.BOX_SIZE,
+                self.BOX_SIZE,
+                cv2.BORDER_CONSTANT,
+                value=(0, 255, 0),
+            )
+            results.append(img)
+        return results
+
+    def one(self, dir: str) -> list[FlagModelOne]:
+        keys: dict[str, str] = {}
         for name, func, _ in self.flags:
+            os.makedirs(f"{dir}/{name}", exist_ok=True)
             self.set_seed(name)
-            key = self.get_key()
-            img = QRCode.from_text(key)
-            cv2.imwrite(f"{dir}/{name}_qr.png", img.img)
-            img = func(img.img)
-            cv2.imwrite(f"{dir}/{name}.png", img)
+            keys[name] = self.get_key()
+            qr = QRCode.from_text(keys[name])
+            cv2.imwrite(f"{dir}/{name}/debug.png", qr.img)
+            img = func(qr.img.copy())
+            for i, img in enumerate(img):
+                cv2.imwrite(f"{dir}/{name}/{i}.png", img)
+        return [
+            FlagModelOne(
+                name=name,
+                description=desc,
+                key=keys[name],
+            )
+            for name, _, desc in self.flags
+        ]
 
     def grid(self, images: list[cv2.typing.MatLike]):
         cnt = math.ceil(math.sqrt(len(images)))
@@ -91,19 +115,33 @@ class CTF:
                 col = row if i == cnt - 1 else cv2.vconcat([col, row])
         return col
 
-    def run(self, dir: str, count: int):
+    def multi(self, dir: str, count: int) -> list[FlagModelMulti]:
         os.makedirs(dir, exist_ok=True)
+        keys: dict[str, list[str]] = {}
         for name, func, _ in self.flags:
+            os.makedirs(f"{dir}/{name}", exist_ok=True)
             self.set_seed(name)
-            keys = []
-            result = []
+            keys[name] = []
+            results: list[list[cv2.typing.MatLike]] = []
+            debug: list[cv2.typing.MatLike] = []
             for _ in range(count):
-                keys.append(self.get_key())
-                img = QRCode.from_text(keys[-1])
-                img = img.copy_with(func(img.img))
-                img = cv2.copyMakeBorder(
-                    img.img, 4, 4, 4, 4, cv2.BORDER_CONSTANT, value=(0, 255, 0)
-                )
-                result.append(img)
-            cv2.imwrite(f"{dir}/{name}.png", self.grid(result))
-            print("".join([hashlib.md5(key.encode()).hexdigest()[0] for key in keys]))
+                keys[name].append(self.get_key())
+                qr = QRCode.from_text(keys[name][-1])
+                img = func(qr.img.copy())
+                img = self.add_border(img)
+                qr_img = self.add_border([qr.img])[0]
+                results.append(img)
+                debug.append(qr_img)
+
+            for i, imgs in enumerate(zip(*results)):
+                cv2.imwrite(f"{dir}/{name}/{i}.png", self.grid(list(imgs)))
+            cv2.imwrite(f"{dir}/{name}/debug.png", self.grid(debug))
+
+        return [
+            FlagModelMulti(
+                name=name,
+                description=desc,
+                key=keys[name],
+            )
+            for name, _, desc in self.flags
+        ]

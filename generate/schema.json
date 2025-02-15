@@ -1,0 +1,91 @@
+{
+    "$defs": {
+        "FlagDescription": {
+            "additionalProperties": false,
+            "properties": {
+                "ja": {
+                    "title": "Ja",
+                    "type": "string"
+                },
+                "en": {
+                    "title": "En",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "ja",
+                "en"
+            ],
+            "title": "FlagDescription",
+            "type": "object"
+        },
+        "FlagModelMulti": {
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "title": "Name",
+                    "type": "string"
+                },
+                "description": {
+                    "$ref": "#/$defs/FlagDescription"
+                },
+                "key": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Key",
+                    "type": "array"
+                }
+            },
+            "required": [
+                "name",
+                "description",
+                "key"
+            ],
+            "title": "FlagModelMulti",
+            "type": "object"
+        },
+        "FlagModelOne": {
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "title": "Name",
+                    "type": "string"
+                },
+                "description": {
+                    "$ref": "#/$defs/FlagDescription"
+                },
+                "key": {
+                    "title": "Key",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "description",
+                "key"
+            ],
+            "title": "FlagModelOne",
+            "type": "object"
+        }
+    },
+    "additionalProperties": false,
+    "properties": {
+        "FlagDescription": {
+            "$ref": "#/$defs/FlagDescription"
+        },
+        "FlagModelOne": {
+            "$ref": "#/$defs/FlagModelOne"
+        },
+        "FlagModelMulti": {
+            "$ref": "#/$defs/FlagModelMulti"
+        }
+    },
+    "required": [
+        "FlagDescription",
+        "FlagModelOne",
+        "FlagModelMulti"
+    ],
+    "title": "Base",
+    "type": "object"
+}

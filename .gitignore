@@ -1,2 +1,10 @@
-.venv
 __pycache__
+
+node_modules/
+
+.venv
+.env
+.astro
+flags/*/*/debug.png
+flags/*/data.json
+dist
