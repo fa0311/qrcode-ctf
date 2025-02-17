@@ -1,0 +1,254 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import fs from "node:fs/promises";
+import { type FlagModelOne, type FlagModelMulti } from "../../utils/types";
+
+export const getStaticPaths = async () => {
+  const getQrCode = async (type: "one" | "multi", path: string) => {
+    const files = await fs.readdir(`flags/${type}/${path}`);
+    return files.filter((file) => /^\d+\.png$/.test(file)).map((file) => `/flags/${type}/${path}/${file}`);
+  };
+
+  const oneJson = await fs.readFile(`flags/one/data.json`, "utf-8");
+  const one = JSON.parse(oneJson) as FlagModelOne[];
+  const oneFlag = await Promise.all(one.map(async (flag) => ({ ...flag, qrcode: await getQrCode("one", flag.name) })));
+  const multiJson = await fs.readFile(`flags/multi/data.json`, "utf-8");
+  const multi = JSON.parse(multiJson) as FlagModelMulti[];
+  const multiFlag = await Promise.all(
+    multi.map(async (flag) => ({ ...flag, qrcode: await getQrCode("multi", flag.name) }))
+  );
+
+  return [
+    {
+      params: { type: "multi" },
+      props: {
+        data: { type: "multi", flag: multiFlag } as const,
+      },
+    },
+    {
+      params: { type: "one" },
+      props: {
+        data: { type: "one", flag: oneFlag } as const,
+      },
+    },
+  ];
+};
+
+const { data } = Astro.props;
+---
+
+<Layout>
+  <div class="container">
+    <h1>問題一覧</h1>
+    <ul class="problem-list">
+      {data.flag.map((flag) => <li data-problem={flag.name}>{flag.description.ja}</li>)}
+    </ul>
+  </div>
+  {
+    data.flag.map((problem) => (
+      <div id={problem.name} class="modal-overlay">
+        <div class="modal">
+          <button class="close-btn">&times;</button>
+          <h2>{problem.description.ja}</h2>
+          <div class="qr-grid">
+            {problem.qrcode.map((qr, index) => (
+              <img src={qr} alt={`QR Code ${index + 1}`} />
+            ))}
+          </div>
+          <div class="answer-section">
+            <textarea placeholder="解答を入力..." />
+            <br />
+            <button class="submit-btn">解答を送信</button>
+          </div>
+        </div>
+      </div>
+    ))
+  }
+  <div id="problem1" class="modal-overlay">
+    <div class="modal">
+      <button class="close-btn">&times;</button>
+      <h2>問題 1: 隠されたパズル</h2>
+      <p>以下のQRコード群から、隠された情報を解析してください。</p>
+      <div class="qr-grid">
+        <img src="https://via.placeholder.com/100?text=QR+1-1" alt="QR Code 1-1" />
+        <img src="https://via.placeholder.com/100?text=QR+1-2" alt="QR Code 1-2" />
+      </div>
+      <div class="answer-section">
+        <textarea placeholder="解答を入力..."></textarea>
+        <br />
+        <button class="submit-btn">解答を送信</button>
+      </div>
+    </div>
+  </div>
+  <div id="problem2" class="modal-overlay">
+    <div class="modal">
+      <button class="close-btn">&times;</button>
+      <h2>問題 2: もう一つの謎</h2>
+      <p>QRコードから隠された意味を読み解いてください。</p>
+      <div class="qr-grid">
+        <img src="https://via.placeholder.com/100?text=QR+2-1" alt="QR Code 2-1" />
+        <img src="https://via.placeholder.com/100?text=QR+2-2" alt="QR Code 2-2" />
+      </div>
+      <div class="answer-section">
+        <textarea placeholder="解答を入力..."></textarea>
+        <br />
+        <button class="submit-btn">解答を送信</button>
+      </div>
+    </div>
+  </div>
+  <div id="problem3" class="modal-overlay">
+    <div class="modal">
+      <button class="close-btn">&times;</button>
+      <h2>問題 3: 秘密のメッセージ</h2>
+      <p>1枚のQRコードから、隠されたメッセージを読み解いてください。</p>
+      <div class="qr-grid">
+        <img src="https://via.placeholder.com/100?text=QR+3-1" alt="QR Code 3-1" />
+      </div>
+      <div class="answer-section">
+        <textarea placeholder="解答を入力..."></textarea>
+        <br />
+        <button class="submit-btn">解答を送信</button>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const listItems = document.querySelectorAll(".problem-list li");
+  listItems.forEach((item) => {
+    item.addEventListener("click", () => {
+      const pid = item.getAttribute("data-problem")!;
+      document.getElementById(pid)!.style.display = "flex";
+    });
+  });
+
+  const closeButtons = document.querySelectorAll(".close-btn");
+  closeButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const modalOverlay = btn.closest(".modal-overlay") as HTMLElement;
+      modalOverlay.style.display = "none";
+    });
+  });
+
+  const submitButtons = document.querySelectorAll(".submit-btn");
+  submitButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const modalOverlay = btn.closest(".modal-overlay") as HTMLElement;
+      modalOverlay.style.display = "none";
+      const pid = modalOverlay.getAttribute("id");
+      const listItem = document.querySelector(`.problem-list li[data-problem="${pid}"]`);
+      if (listItem) {
+        listItem.classList.add("solved");
+      }
+    });
+  });
+</script>
+
+<style>
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-family: "Orbitron", sans-serif;
+  }
+  .problem-list {
+    list-style: none;
+  }
+  .problem-list li {
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 30px;
+  }
+  .problem-list li:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  .problem-list li.solved {
+    background: rgba(0, 200, 0, 0.3);
+  }
+  .problem-list li.solved::after {
+    content: "✓";
+    color: #0f0;
+    font-size: 1.5rem;
+  }
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    padding: 20px;
+  }
+  .modal {
+    background: #1a1a1a;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 900px;
+    width: 80%;
+    height: 80%;
+    position: relative;
+  }
+  .modal h2 {
+    font-family: "Orbitron", sans-serif;
+    margin-bottom: 10px;
+  }
+  .modal p {
+    margin-bottom: 15px;
+  }
+  .qr-grid {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+  }
+  .qr-grid img {
+    max-width: 100px;
+    border-radius: 5px;
+  }
+  .answer-section textarea {
+    width: 100%;
+    min-height: 100px;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    resize: vertical;
+    margin-bottom: 10px;
+    font-size: 1rem;
+  }
+  .modal button {
+    background: linear-gradient(45deg, #00c6ff, #0072ff);
+    border: none;
+    padding: 10px 20px;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+  .modal button:hover {
+    transform: scale(1.05);
+  }
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+</style>

@@ -98,7 +98,7 @@ shutil.rmtree("flags", ignore_errors=True)
 one = ctf.one("flags/one")
 multi = ctf.multi("flags/multi", 64)
 
-with open("flags/one/data.json", "w") as f:
-    json.dump([x.model_dump(mode="json") for x in one], f)
-with open("flags/multi/data.json", "w") as f:
-    json.dump([x.model_dump(mode="json") for x in multi], f)
+with open("flags/one/data.json", "w", encoding="utf-8") as f:
+    json.dump([x.model_dump(mode="json") for x in one], f, ensure_ascii=False)
+with open("flags/multi/data.json", "w", encoding="utf-8") as f:
+    json.dump([x.model_dump(mode="json") for x in multi], f, ensure_ascii=False)

@@ -1,0 +1,125 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+  <div class="content">
+    <div class="department-buttons">
+      <button id="image-btn" class="active">単一画像</button>
+      <button id="programming-btn">複数画像</button>
+    </div>
+    <div id="image-rules" class="rules-section">
+      <h2>単一画像ルール</h2>
+      <ol>
+        <li>単一のQRコードに画像処理が施されています。</li>
+        <li>QRコードから情報を解析し、最終的な解答を導き出してください。</li>
+        <li>画像編集ソフトなどを使用して手動で解析することも可能です。</li>
+        <li>フラグの形式は<code is:raw>FLAG_{xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx}</code>です。</li>
+      </ol>
+    </div>
+    <div id="programming-rules" class="rules-section" style="display: none;">
+      <h2>複数画像ルール</h2>
+      <ol>
+        <li>64枚のQRコードに同一の画像処理が施されています。</li>
+        <li>各QRコードから情報を解析し、最終的な解答を導き出してください。</li>
+        <li>プログラミングによる自動解析ツールの使用が推奨されます。</li>
+        <li>フラグの形式は<code is:raw>FLAG_{xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx}</code>です。</li>
+      </ol>
+    </div>
+    <div class="start-button" style="text-align: center; margin-top: 40px;">
+      <a href="problem.html" class="cta-button">開始</a>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const programmingBtn = document.getElementById("programming-btn")!;
+  const imageBtn = document.getElementById("image-btn")!;
+  const programmingRules = document.getElementById("programming-rules")!;
+  const imageRules = document.getElementById("image-rules")!;
+
+  programmingBtn.addEventListener("click", () => {
+    programmingRules.style.display = "block";
+    imageRules.style.display = "none";
+    programmingBtn.classList.add("active");
+    imageBtn.classList.remove("active");
+  });
+
+  imageBtn.addEventListener("click", () => {
+    programmingRules.style.display = "none";
+    imageRules.style.display = "block";
+    imageBtn.classList.add("active");
+    programmingBtn.classList.remove("active");
+  });
+</script>
+
+<style>
+  .content {
+    margin-top: 40px;
+  }
+  /* 部門選択ボタン */
+  .department-buttons {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .department-buttons button {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s;
+  }
+  .department-buttons button.active,
+  .department-buttons button:hover {
+    background: #f5af19;
+  }
+  /* ルール表示エリア */
+  .rules-section {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 40px;
+  }
+  .rules-section h2 {
+    font-family: "Orbitron", sans-serif;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .rules-section ol {
+    margin-left: 20px;
+  }
+  .rules-section li {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+  }
+
+  code {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 5px;
+    margin: 0 2px;
+    border-radius: 5px;
+  }
+  .start-button .cta-button {
+    display: inline-block;
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    text-decoration: none;
+    color: #fff;
+    border: 2px solid transparent;
+    border-radius: 50px;
+    background: linear-gradient(45deg, #f12711, #f5af19);
+    background-size: 200% auto;
+    transition:
+      background-position 0.5s,
+      transform 0.3s;
+    box-shadow: 0 4px 15px rgba(245, 175, 25, 0.4);
+  }
+  .start-button .cta-button:hover {
+    background-position: right center;
+    transform: scale(1.05);
+  }
+</style>
