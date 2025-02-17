@@ -86,6 +86,11 @@ class CTF:
             results.append(img)
         return results
 
+    def reduce_resolution(self, img: cv2.typing.MatLike):
+        h, w = img.shape[:2]
+        img = cv2.resize(img, (w // self.BOX_SIZE, h // self.BOX_SIZE))
+        return img
+
     def one(self, dir: str) -> list[FlagModelOne]:
         keys: dict[str, str] = {}
         for name, func, _ in self.flags:
@@ -97,6 +102,8 @@ class CTF:
             img = func(qr.img.copy())
             for i, img in enumerate(img):
                 cv2.imwrite(f"{dir}/{name}/{i}.png", img)
+                reduced = self.reduce_resolution(img)
+                cv2.imwrite(f"{dir}/{name}/{i}_reduced.png", reduced)
         return [
             FlagModelOne(
                 name=name,
