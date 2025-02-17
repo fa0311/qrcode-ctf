@@ -93,26 +93,6 @@ def dot_pattern(img: cv2.typing.MatLike):
     return [canvas]
 
 
-@ctf.flag(ja="斜め柄", en="Diagonal pattern")
-def diagonal_pattern(img: cv2.typing.MatLike):
-    mask1 = np.zeros(img.shape[:2], dtype=bool)
-    mask1[CTF.BOX_SIZE // 2 :: CTF.BOX_SIZE, CTF.BOX_SIZE // 2 :: CTF.BOX_SIZE] = True
-    mask2 = img[:, :, 0] == 0
-    and_mask = np.logical_and(mask1, mask2)
-    digi_mask = np.zeros(img.shape[:2], dtype=bool)
-    for i in range(CTF.BOX_SIZE):
-        shift = CTF.BOX_SIZE // 2 - i
-        new1_mask = np.roll(np.roll(and_mask.copy(), shift, axis=0), shift, axis=1)
-        new2_mask = np.roll(np.roll(and_mask.copy(), -shift, axis=0), shift, axis=1)
-        digi_mask = np.logical_or(digi_mask, new1_mask)
-        digi_mask = np.logical_or(digi_mask, new2_mask)
-
-    canvas = np.full_like(img, 255)
-    canvas[digi_mask] = Color.black.ndarray
-
-    return [canvas]
-
-
 shutil.rmtree("flags", ignore_errors=True)
 
 one = ctf.one("flags/one")
