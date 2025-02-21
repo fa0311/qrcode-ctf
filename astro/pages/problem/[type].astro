@@ -1,34 +1,22 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import fs from "node:fs/promises";
-import { type FlagModelOne, type FlagModelMulti } from "../../utils/types";
+import { getQrMulti, getQrOne } from "../../utils/flags";
 
 export const getStaticPaths = async () => {
-  const getQrCode = async (type: "one" | "multi", path: string) => {
-    const files = await fs.readdir(`flags/${type}/${path}`);
-    return files.filter((file) => /^\d+\.png$/.test(file)).map((file) => `/flags/${type}/${path}/${file}`);
-  };
-
-  const oneJson = await fs.readFile(`flags/one/data.json`, "utf-8");
-  const one = JSON.parse(oneJson) as FlagModelOne[];
-  const oneFlag = await Promise.all(one.map(async (flag) => ({ ...flag, qrcode: await getQrCode("one", flag.name) })));
-  const multiJson = await fs.readFile(`flags/multi/data.json`, "utf-8");
-  const multi = JSON.parse(multiJson) as FlagModelMulti[];
-  const multiFlag = await Promise.all(
-    multi.map(async (flag) => ({ ...flag, qrcode: await getQrCode("multi", flag.name) }))
-  );
+  const one = await getQrOne("one");
+  const multi = await getQrMulti("multi");
 
   return [
     {
       params: { type: "multi" },
       props: {
-        data: { type: "multi", flag: multiFlag } as const,
+        data: { type: "multi", flag: multi } as const,
       },
     },
     {
       params: { type: "one" },
       props: {
-        data: { type: "one", flag: oneFlag } as const,
+        data: { type: "one", flag: one } as const,
       },
     },
   ];
@@ -44,7 +32,7 @@ const { data } = Astro.props;
       {data.flag.map((flag) => <li data-problem={flag.name}>{flag.description.ja}</li>)}
     </ul>
   </div>
-  {
+  <!-- {
     data.flag.map((problem) => (
       <div id={problem.name} class="modal-overlay">
         <div class="modal">
@@ -63,8 +51,8 @@ const { data } = Astro.props;
         </div>
       </div>
     ))
-  }
-  <div id="problem1" class="modal-overlay">
+  } -->
+  <!-- <div id="problem1" class="modal-overlay">
     <div class="modal">
       <button class="close-btn">&times;</button>
       <h2>問題 1: 隠されたパズル</h2>
@@ -79,70 +67,8 @@ const { data } = Astro.props;
         <button class="submit-btn">解答を送信</button>
       </div>
     </div>
-  </div>
-  <div id="problem2" class="modal-overlay">
-    <div class="modal">
-      <button class="close-btn">&times;</button>
-      <h2>問題 2: もう一つの謎</h2>
-      <p>QRコードから隠された意味を読み解いてください。</p>
-      <div class="qr-grid">
-        <img src="https://via.placeholder.com/100?text=QR+2-1" alt="QR Code 2-1" />
-        <img src="https://via.placeholder.com/100?text=QR+2-2" alt="QR Code 2-2" />
-      </div>
-      <div class="answer-section">
-        <textarea placeholder="解答を入力..."></textarea>
-        <br />
-        <button class="submit-btn">解答を送信</button>
-      </div>
-    </div>
-  </div>
-  <div id="problem3" class="modal-overlay">
-    <div class="modal">
-      <button class="close-btn">&times;</button>
-      <h2>問題 3: 秘密のメッセージ</h2>
-      <p>1枚のQRコードから、隠されたメッセージを読み解いてください。</p>
-      <div class="qr-grid">
-        <img src="https://via.placeholder.com/100?text=QR+3-1" alt="QR Code 3-1" />
-      </div>
-      <div class="answer-section">
-        <textarea placeholder="解答を入力..."></textarea>
-        <br />
-        <button class="submit-btn">解答を送信</button>
-      </div>
-    </div>
-  </div>
+  </div> -->
 </Layout>
-
-<script>
-  const listItems = document.querySelectorAll(".problem-list li");
-  listItems.forEach((item) => {
-    item.addEventListener("click", () => {
-      const pid = item.getAttribute("data-problem")!;
-      document.getElementById(pid)!.style.display = "flex";
-    });
-  });
-
-  const closeButtons = document.querySelectorAll(".close-btn");
-  closeButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const modalOverlay = btn.closest(".modal-overlay") as HTMLElement;
-      modalOverlay.style.display = "none";
-    });
-  });
-
-  const submitButtons = document.querySelectorAll(".submit-btn");
-  submitButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const modalOverlay = btn.closest(".modal-overlay") as HTMLElement;
-      modalOverlay.style.display = "none";
-      const pid = modalOverlay.getAttribute("id");
-      const listItem = document.querySelector(`.problem-list li[data-problem="${pid}"]`);
-      if (listItem) {
-        listItem.classList.add("solved");
-      }
-    });
-  });
-</script>
 
 <style>
   .container {
@@ -180,7 +106,7 @@ const { data } = Astro.props;
     color: #0f0;
     font-size: 1.5rem;
   }
-  .modal-overlay {
+  /* .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -208,8 +134,8 @@ const { data } = Astro.props;
   }
   .modal p {
     margin-bottom: 15px;
-  }
-  .qr-grid {
+  } */
+  /* .qr-grid {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
@@ -218,8 +144,8 @@ const { data } = Astro.props;
   .qr-grid img {
     max-width: 100px;
     border-radius: 5px;
-  }
-  .answer-section textarea {
+  } */
+  /* .answer-section textarea {
     width: 100%;
     min-height: 100px;
     border: none;
@@ -250,5 +176,5 @@ const { data } = Astro.props;
     color: #fff;
     font-size: 1.5rem;
     cursor: pointer;
-  }
+  } */
 </style>
