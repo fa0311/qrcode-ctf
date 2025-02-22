@@ -1,0 +1,19 @@
+---
+import Container from "../../components/Container.astro";
+import Rule from "../../components/Rule.astro";
+import Layout from "../../layouts/Layout.astro";
+import "./../../styles/base.css";
+---
+
+<Layout>
+  <Container>
+    <Rule title="複数画像ルール" selected={1}>
+      <ol>
+        <li>64枚のQRコードに同一の画像処理が施されています。</li>
+        <li>各QRコードから情報を解析し、最終的な解答を導き出してください。</li>
+        <li>プログラミングによる自動解析ツールの使用が推奨されます。</li>
+        <li>フラグの形式は<code is:raw>FLAG_{xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx}</code>です。</li>
+      </ol>
+    </Rule>
+  </Container>
+</Layout>

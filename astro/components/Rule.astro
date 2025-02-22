@@ -1,0 +1,92 @@
+---
+import { resolve } from "./../utils/url.ts";
+interface Props {
+  title: string;
+  selected: number;
+}
+
+const link = [
+  { href: resolve(Astro, "one").href, text: "単一画像" },
+  { href: resolve(Astro, "multi").href, text: "複数画像" },
+];
+
+const { title, selected } = Astro.props;
+---
+
+<div class="department-buttons">
+  {
+    link.map(({ href, text }, index) => (
+      <a href={href} class={selected === index ? "active" : ""}>
+        {text}
+      </a>
+    ))
+  }
+</div>
+<div class="rules-section">
+  <h2>{title}</h2>
+  <slot />
+</div>
+
+<div class="cta-container">
+  <a href={link[selected].href} class="cta-button">開始</a>
+</div>
+
+<style>
+  .department-buttons {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .department-buttons a {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s;
+    text-decoration: none;
+  }
+
+  .department-buttons a.active,
+  .department-buttons a:hover {
+    background: #f5af19;
+  }
+
+  .rules-section {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+  }
+
+  h2 {
+    font-family: "Orbitron", sans-serif;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .cta-container {
+    text-align: center;
+  }
+
+  .cta-button {
+    display: inline-block;
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    text-decoration: none;
+    color: #fff;
+    border-radius: 50px;
+    background: linear-gradient(45deg, #f12711, #f5af19);
+    background-size: 200% auto;
+    transition:
+      background-position 0.5s,
+      transform 0.3s;
+    box-shadow: 0 4px 15px rgba(245, 175, 25, 0.4);
+  }
+  .cta-button:hover {
+    background-position: right center;
+    transform: scale(1.05);
+  }
+</style>

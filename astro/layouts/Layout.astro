@@ -16,23 +16,19 @@
     <div class="bg-animation"></div>
     <div class="bg-overlay"></div>
 
-    <div class="container">
-      <header>
-        <h1>qrcode-ctf</h1>
-        <nav>
-          <ul>
-            <li><a href="#">ホーム</a></li>
-            <li><a href="#">概要</a></li>
-            <li><a href="#">参加</a></li>
-            <li><a href="#">お問い合わせ</a></li>
-          </ul>
-        </nav>
-      </header>
-
-      <slot />
-
-      <footer>&copy; 2025 qrcode-ctf. All Rights Reserved.</footer>
-    </div>
+    <header>
+      <h1>qrcode-ctf</h1>
+      <nav>
+        <ul>
+          <li><a href="#">ホーム</a></li>
+          <li><a href="#">概要</a></li>
+          <li><a href="#">参加</a></li>
+          <li><a href="#">お問い合わせ</a></li>
+        </ul>
+      </nav>
+    </header>
+    <slot />
+    <footer>&copy; 2025 qrcode-ctf. All Rights Reserved.</footer>
   </body>
 
   <style>
@@ -52,6 +48,8 @@
       color: #fff;
       overflow-x: hidden;
       position: relative;
+      overflow: hidden;
+      height: 100dvh;
     }
     .bg-animation {
       position: fixed;
@@ -80,16 +78,11 @@
       background: rgba(13, 13, 13, 0.85);
       z-index: -1;
     }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 0;
+      padding: 20px;
     }
     header h1 {
       font-family: "Orbitron", sans-serif;
@@ -144,6 +137,17 @@
       .hero p {
         font-size: 1rem;
       }
+    }
+
+    footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
     }
   </style>
 </html>

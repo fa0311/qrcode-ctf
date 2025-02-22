@@ -1,47 +1,31 @@
 ---
+import Hero from "../components/Hero.astro";
 import Layout from "../layouts/Layout.astro";
+import { resolve } from "../utils/url";
 ---
 
 <Layout>
-  <section class="hero">
-    <h2>隠されたフラグ、解き放て</h2>
+  <Hero title="隠されたフラグ、解き放て">
     <p>
       QRコードに刻まれた謎を解読せよ。<br />
       プログラミングの妙技か、画像編集のセンスか―あなたの技量が勝利を呼ぶ。
     </p>
-    <a href="#" class="cta-button">今すぐ挑戦</a>
-  </section>
+    <a href={`${resolve(Astro, "one").href}`} class="cta-button">ルールを確認</a>
+  </Hero>
 </Layout>
 <style>
-  .hero {
-    min-height: 80vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 40px 20px;
-  }
-  .hero h2 {
-    font-family: "Orbitron", sans-serif;
-    font-size: 3rem;
-    margin-bottom: 20px;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-  }
-  .hero p {
+  p {
     font-size: 1.2rem;
     margin-bottom: 30px;
     line-height: 1.5;
   }
 
-  /* CTAボタン */
   .cta-button {
     display: inline-block;
     padding: 15px 40px;
     font-size: 1.2rem;
     text-decoration: none;
     color: #fff;
-    border: 2px solid transparent;
     border-radius: 50px;
     background: linear-gradient(45deg, #ff416c, #ff4b2b);
     background-size: 200% auto;
@@ -53,12 +37,5 @@ import Layout from "../layouts/Layout.astro";
   .cta-button:hover {
     background-position: right center;
     transform: scale(1.05);
-  }
-  footer {
-    text-align: center;
-    padding: 20px 0;
-    margin-top: 40px;
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.7);
   }
 </style>

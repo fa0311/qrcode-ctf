@@ -1,0 +1,31 @@
+---
+interface Props {
+  description: string;
+  qrcode: string[];
+}
+
+const { description, qrcode } = Astro.props;
+---
+
+<>
+  <p>{description}</p>
+  <div class="qr-grid">
+    {qrcode.map((qr, index) => <img src={qr} alt={`QR Code ${index + 1}`} />)}
+  </div>
+  <slot />
+  <!-- <textarea placeholder="解答を入力..."></textarea>
+    <button class="submit-btn">解答を送信</button> -->
+</>
+
+<style>
+  .qr-grid {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+  }
+  .qr-grid img {
+    max-width: 100px;
+    border-radius: 5px;
+  }
+</style>

@@ -1,0 +1,30 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<section class="hero">
+  <h2>{title}</h2>
+  <slot />
+</section>
+
+<style>
+  .hero {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .hero h2 {
+    font-family: "Orbitron", sans-serif;
+    font-size: 3rem;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  }
+</style>
