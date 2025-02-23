@@ -13,8 +13,6 @@ const { description, qrcode } = Astro.props;
     {qrcode.map((qr, index) => <img src={qr} alt={`QR Code ${index + 1}`} />)}
   </div>
   <slot />
-  <!-- <textarea placeholder="解答を入力..."></textarea>
-    <button class="submit-btn">解答を送信</button> -->
 </>
 
 <style>

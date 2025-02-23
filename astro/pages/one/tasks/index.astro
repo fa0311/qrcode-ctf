@@ -1,0 +1,16 @@
+---
+import Container from "../../../components/Container.astro";
+import Layout from "../../../layouts/Layout.astro";
+import { getQrOne } from "../../../utils/flags";
+import "./../../../styles/tasks.css";
+
+const flag = await getQrOne("one");
+---
+
+<Layout>
+  <Container title="問題一覧">
+    <ol class="tasks">
+      {flag.map((flag) => <li data-problem={flag.name}>{flag.description.ja}</li>)}
+    </ol>
+  </Container>
+</Layout>
