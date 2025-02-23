@@ -12,7 +12,7 @@ const flag = await getQrOne("one");
     <ol class="tasks">
       {
         flag.map((flag) => (
-          <a href={`/one/tasks/${flag.name}`}>
+          <a href={`/multi/tasks/${flag.name}`}>
             <li data-problem={flag.name}>{flag.description.ja}</li>
           </a>
         ))

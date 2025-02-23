@@ -1,5 +1,9 @@
+---
+import { resolve } from "../utils/url";
+---
+
 <!doctype html>
-<html lang="en">
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -15,139 +19,121 @@
   <body>
     <div class="bg-animation"></div>
     <div class="bg-overlay"></div>
-
     <header>
-      <h1>qrcode-ctf</h1>
+      <h1><a href={resolve(Astro, "/")}>qrcode-ctf</a></h1>
       <nav>
         <ul>
-          <li><a href="#">ホーム</a></li>
-          <li><a href="#">概要</a></li>
-          <li><a href="#">参加</a></li>
-          <li><a href="#">お問い合わせ</a></li>
+          <li><a href="#">GitHub</a></li>
         </ul>
       </nav>
     </header>
     <slot />
     <footer>&copy; 2025 qrcode-ctf. All Rights Reserved.</footer>
   </body>
-
-  <style>
-    html {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-    }
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: "Roboto", sans-serif;
-      background: #0d0d0d;
-      color: #fff;
-      overflow-x: hidden;
-      position: relative;
-      overflow: hidden;
-      height: 100dvh;
-    }
-    .bg-animation {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at center, #ff416c, #ff4b2b, #1a1a1a);
-      animation: rotateBg 20s linear infinite;
-      z-index: -2;
-    }
-    @keyframes rotateBg {
-      from {
-        transform: rotate(0deg) translate(-25%, -25%);
-      }
-      to {
-        transform: rotate(360deg) translate(-25%, -25%);
-      }
-    }
-    .bg-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(13, 13, 13, 0.85);
-      z-index: -1;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px;
-    }
-    header h1 {
-      font-family: "Orbitron", sans-serif;
-      font-size: 2.5rem;
-      letter-spacing: 2px;
-    }
-    nav ul {
-      list-style: none;
-      display: flex;
-    }
-    nav ul li {
-      margin-left: 30px;
-    }
-    nav ul li a {
-      text-decoration: none;
-      color: #fff;
-      font-size: 1rem;
-      position: relative;
-      transition: color 0.3s;
-    }
-    nav ul li a:hover {
-      color: #ff4b2b;
-    }
-    nav ul li a::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: -5px;
-      width: 0;
-      height: 2px;
-      background: #ff4b2b;
-      transition: width 0.3s;
-    }
-    nav ul li a:hover::after {
-      width: 100%;
-    }
-
-    @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-      }
-      nav ul {
-        flex-direction: column;
-        margin-top: 10px;
-      }
-      nav ul li {
-        margin: 10px 0;
-      }
-      .hero h2 {
-        font-size: 2.5rem;
-      }
-      .hero p {
-        font-size: 1rem;
-      }
-    }
-
-    footer {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      text-align: center;
-      padding: 20px 0;
-      margin-top: 40px;
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.7);
-    }
-  </style>
 </html>
+
+<style>
+  html {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-family: "Roboto", sans-serif;
+    background: #0d0d0d;
+    color: #fff;
+    overflow-x: hidden;
+    position: relative;
+    overflow: hidden;
+    height: 100svh;
+  }
+  .bg-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, #ff416c, #ff4b2b, #1a1a1a);
+    animation: rotateBg 20s linear infinite;
+    z-index: -2;
+  }
+  @keyframes rotateBg {
+    from {
+      transform: rotate(0deg) translate(-25%, -25%);
+    }
+    to {
+      transform: rotate(360deg) translate(-25%, -25%);
+    }
+  }
+  .bg-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(13, 13, 13, 0.85);
+    z-index: -1;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+  }
+  header h1 {
+    font-family: "Orbitron", sans-serif;
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+  }
+  nav ul {
+    list-style: none;
+    display: flex;
+  }
+  nav ul li {
+    margin-left: 30px;
+  }
+  nav ul li a {
+    font-size: 1rem;
+    position: relative;
+    transition: color 0.3s;
+  }
+  nav ul li a:hover {
+    color: #ff4b2b;
+  }
+  nav ul li a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    background: #ff4b2b;
+    transition: width 0.3s;
+  }
+  nav ul li a:hover::after {
+    width: 100%;
+  }
+
+  footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 40px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+</style>
+
+<style is:global>
+  a {
+    color: #fff;
+    text-decoration: none;
+  }
+</style>
