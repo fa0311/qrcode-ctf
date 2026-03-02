@@ -1,5 +1,5 @@
 qrcode>=8,<9
-pillow>=11,<12
+pillow>=11,<13
 numpy>=2,<3
 opencv-python>=4,<5
 pydantic>=2,<3
